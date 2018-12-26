@@ -15,9 +15,11 @@ jobs:
             export GOSS_PATH=$(pwd)/goss-linux-amd64
             curl -L https://raw.githubusercontent.com/aelsabbahy/goss/master/extras/dgoss/dgoss -o /usr/local/bin/dgoss
             chmod +rx /usr/local/bin/dgoss
+      - run:
           name: Create Temporary Image
           command: |
             docker build -t temporary:nginx . 
+      - run:
           name: Run Tests
           command: |
             dgoss run temporary:nginx nginx -g "daemon off;"
