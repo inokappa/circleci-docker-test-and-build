@@ -1,0 +1,15 @@
+package:
+  nginx:
+    installed: true
+process:
+  nginx:
+    running: true
+port:
+  tcp:80:
+    listening: true
+file:
+  /usr/share/nginx/html/index.html:
+    exists: true
+    filetype: file
+    contains:
+    - "hello world!"

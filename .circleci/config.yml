@@ -1,0 +1,31 @@
+version: 2
+jobs:
+  build:
+    machine: true
+    #     docker:
+    #       - image: circleci/python:2.7.14
+    #         environment:
+    #           FLASK_CONFIG: testing
+    steps:
+      - checkout
+      - run:
+          name: Setup goss & dgoss
+          command: |
+            curl -L https://github.com/aelsabbahy/goss/releases/download/v0.3.6/goss-linux-amd64 -o ./goss-linux-amd64
+            export GOSS_PATH=$(pwd)/goss-linux-amd64
+            curl -L https://raw.githubusercontent.com/aelsabbahy/goss/master/extras/dgoss/dgoss -o /usr/local/bin/dgoss
+            chmod +rx /usr/local/bin/dgoss
+          name: Create Temporary Image
+          command: |
+            docker build -t temporary:nginx . 
+          name: Run Tests
+          command: |
+            dgoss run temporary:nginx nginx -g "daemon off;"
+          #      - setup_remote_docker:
+          #          docker_layer_caching: true
+          #      - run:
+          #          name: Build and push Docker image
+          #          command: |
+          #            docker build -t inokappa/$IMAGE_NAME:$TAG .
+          #            echo $DOCKER_PWD | docker login -u $DOCKER_LOGIN --password-stdin
+          #            docker push inokappa/$IMAGE_NAME:$TAG
