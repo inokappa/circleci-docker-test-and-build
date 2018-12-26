@@ -7,10 +7,11 @@ jobs:
       - run:
           name: Setup goss & dgoss
           command: |
-            curl -L https://github.com/aelsabbahy/goss/releases/download/v0.3.6/goss-linux-amd64 -o ./goss-linux-amd64
-            export GOSS_PATH=$(pwd)/goss-linux-amd64
-            curl -L https://raw.githubusercontent.com/aelsabbahy/goss/master/extras/dgoss/dgoss -o ~/bin/dgoss
-            chmod +x ~/bin/dgoss
+            curl -L https://github.com/aelsabbahy/goss/releases/download/v0.3.6/goss-linux-amd64 -o ${HOME}/bin/goss
+            chmod +x ${HOME}/bin/goss
+            export GOSS_PATH=${HOME}/bin/goss
+            curl -L https://raw.githubusercontent.com/aelsabbahy/goss/master/extras/dgoss/dgoss -o ${HOME}/bin/dgoss
+            chmod +x ${HOME}/bin/dgoss
       - run:
           name: Create Temporary Image
           command: |
