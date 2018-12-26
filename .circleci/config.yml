@@ -14,7 +14,7 @@ jobs:
             curl -L https://github.com/aelsabbahy/goss/releases/download/v0.3.6/goss-linux-amd64 -o ./goss-linux-amd64
             export GOSS_PATH=$(pwd)/goss-linux-amd64
             curl -L https://raw.githubusercontent.com/aelsabbahy/goss/master/extras/dgoss/dgoss -o ~/bin/dgoss
-            chmod +rx /usr/local/bin/dgoss
+            chmod +x ~/bin/dgoss
       - run:
           name: Create Temporary Image
           command: |
