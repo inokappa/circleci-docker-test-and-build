@@ -1,14 +1,14 @@
 package:
-  nginx:
+  httpd:
     installed: true
 process:
-  nginx:
+  httpd:
     running: true
 port:
   tcp:80:
     listening: true
 file:
-  /usr/share/nginx/html/index.html:
+  /var/www/html/index.html:
     exists: true
     filetype: file
     contains:

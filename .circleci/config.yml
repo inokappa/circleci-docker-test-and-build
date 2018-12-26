@@ -2,10 +2,6 @@ version: 2
 jobs:
   build:
     machine: true
-    #     docker:
-    #       - image: circleci/python:2.7.14
-    #         environment:
-    #           FLASK_CONFIG: testing
     steps:
       - checkout
       - run:
@@ -18,11 +14,12 @@ jobs:
       - run:
           name: Create Temporary Image
           command: |
-            docker build -t temporary:nginx . 
+            docker build -t temporary:httpd . 
       - run:
           name: Run Tests
           command: |
-            dgoss run temporary:nginx nginx -g "daemon off;"
+            # dgoss run temporary:httpd httpd -g "daemon off;"
+            dgoss run temporary:httpd /usr/sbin/httpd -DFOREGROUND
           #      - setup_remote_docker:
           #          docker_layer_caching: true
           #      - run:
