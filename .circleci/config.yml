@@ -4,6 +4,14 @@ jobs:
     machine: true
     steps:
       - checkout
+      - setup_remote_docker:
+          docker_layer_caching: true
+      - run:
+          name: Setup AWS CLI
+          command: |
+            curl "https://s3.amazonaws.com/aws-cli/awscli-bundle.zip" -o "awscli-bundle.zip"
+            unzip awscli-bundle.zip
+            sudo ./awscli-bundle/install -i /usr/local/aws -b /usr/local/bin/aws
       - run:
           name: Setup goss & dgoss
           command: |
@@ -13,19 +21,24 @@ jobs:
             curl -L https://raw.githubusercontent.com/aelsabbahy/goss/master/extras/dgoss/dgoss -o ${HOME}/bin/dgoss
             chmod +x ${HOME}/bin/dgoss
       - run:
-          name: Create Temporary Image
+          name: Build Image
           command: |
-            docker build -t temporary:httpd . 
+            docker build -t httpd . 
       - run:
           name: Run Tests
           command: |
-            # dgoss run temporary:httpd httpd -g "daemon off;"
-            dgoss run temporary:httpd /usr/sbin/httpd -DFOREGROUND
-          #      - setup_remote_docker:
-          #          docker_layer_caching: true
-          #      - run:
-          #          name: Build and push Docker image
-          #          command: |
-          #            docker build -t inokappa/$IMAGE_NAME:$TAG .
-          #            echo $DOCKER_PWD | docker login -u $DOCKER_LOGIN --password-stdin
-          #            docker push inokappa/$IMAGE_NAME:$TAG
+            dgoss run httpd /usr/sbin/httpd -DFOREGROUND
+            #      - run:
+            #          name: Push Docker image to AWS ECR
+            #          command: |
+            #            docker build -t inokappa/$IMAGE_NAME:$TAG .
+            #            echo $DOCKER_PWD | docker login -u $DOCKER_LOGIN --password-stdin
+            #            docker push inokappa/$IMAGE_NAME:$TAG
+            #       - run:
+            #           name: "Login to AWS ECR"
+            #           command: eval $(aws ecr get-login)
+            #       - run:
+            #           name: "Build & Push Docker Image"
+            #           command: |
+            #             docker build -t $AWS_ACCOUNT_ID.dkr.ecr.us-east-1.amazonaws.com/my-app:latest -t $AWS_ACCOUNT_ID.dkr.ecr.us-east-1.amazonaws.com/my-app:$CIRCLE_SHA1 .
+            #             docker push $AWS_ACCOUNT_ID.dkr.ecr.us-east-1.amazonaws.com/my-app:$CIRCLE_SHA1

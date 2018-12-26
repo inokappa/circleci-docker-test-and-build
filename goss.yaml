@@ -12,4 +12,4 @@ file:
     exists: true
     filetype: file
     contains:
-    - "hello world!"
+    - "circleci-docker-test-and-build"
