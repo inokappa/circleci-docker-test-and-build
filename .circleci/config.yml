@@ -34,9 +34,9 @@ jobs:
             #            docker build -t inokappa/$IMAGE_NAME:$TAG .
             #            echo $DOCKER_PWD | docker login -u $DOCKER_LOGIN --password-stdin
             #            docker push inokappa/$IMAGE_NAME:$TAG
-            #       - run:
-            #           name: "Login to AWS ECR"
-            #           command: eval $(aws ecr get-login)
+            - run:
+                name: "Login to AWS ECR"
+                command: eval $(aws ecr get-login --no-include-email)
             #       - run:
             #           name: "Build & Push Docker Image"
             #           command: |
