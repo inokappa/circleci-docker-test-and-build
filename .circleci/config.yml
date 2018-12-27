@@ -7,6 +7,11 @@ jobs:
         #       - setup_remote_docker:
         #           docker_layer_caching: true
       - run:
+          name: Setup common environment variables
+          command: |
+            echo 'export ECR_REPOSITORY_NAME="${AWS_RESOURCE_NAME_PREFIX}"' >> $BASH_ENV
+            echo 'export FULL_IMAGE_NAME="${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com/${ECR_REPOSITORY_NAME}:${CIRCLE_SHA1}"' >> $BASH_ENV
+      - run:
           name: Setup AWS CLI
           command: |
             curl "https://s3.amazonaws.com/aws-cli/awscli-bundle.zip" -o "awscli-bundle.zip"
@@ -23,22 +28,15 @@ jobs:
       - run:
           name: Build Image
           command: |
-            docker build -t httpd . 
+            docker build -t ${FULL_IMAGE_NAME} . 
       - run:
           name: Run Tests
           command: |
-            dgoss run httpd /usr/sbin/httpd -DFOREGROUND
-            #      - run:
-            #          name: Push Docker image to AWS ECR
-            #          command: |
-            #            docker build -t inokappa/$IMAGE_NAME:$TAG .
-            #            echo $DOCKER_PWD | docker login -u $DOCKER_LOGIN --password-stdin
-            #            docker push inokappa/$IMAGE_NAME:$TAG
+            dgoss run ${FULL_IMAGE_NAME} /usr/sbin/httpd -DFOREGROUND
       - run:
           name: "Login to AWS ECR"
           command: eval $(aws ecr get-login --region $AWS_DEFAULT_REGION --no-include-email)
-            #       - run:
-            #           name: "Build & Push Docker Image"
-            #           command: |
-            #             docker build -t $AWS_ACCOUNT_ID.dkr.ecr.us-east-1.amazonaws.com/my-app:latest -t $AWS_ACCOUNT_ID.dkr.ecr.us-east-1.amazonaws.com/my-app:$CIRCLE_SHA1 .
-            #             docker push $AWS_ACCOUNT_ID.dkr.ecr.us-east-1.amazonaws.com/my-app:$CIRCLE_SHA1
+      - run:
+          name: "Push Docker Image"
+          command: |
+            docker push ${FULL_IMAGE_NAME}
