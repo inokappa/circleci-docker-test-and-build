@@ -34,9 +34,9 @@ jobs:
           command: |
             dgoss run ${FULL_IMAGE_NAME} /usr/sbin/httpd -DFOREGROUND
       - run:
-          name: "Login to AWS ECR"
+          name: Login to AWS ECR
           command: eval $(aws ecr get-login --region $AWS_DEFAULT_REGION --no-include-email)
       - run:
-          name: "Push Docker Image"
+          name: Push Docker Image
           command: |
             docker push ${FULL_IMAGE_NAME}
